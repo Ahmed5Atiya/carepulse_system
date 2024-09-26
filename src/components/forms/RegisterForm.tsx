@@ -216,6 +216,22 @@ export function RegisterForm({ user }: { user: User }) {
             placeholder="ABC12133733"
           />
         </div>
+        <div className="flex xl:flex-row flex-col gap-6">
+          <CustomFromField
+            fieldType={FormFieldType.TEXTAREA}
+            control={form.control}
+            name="allergies"
+            label="Allergies if any"
+            placeholder=" Menof El Menofiya"
+          />
+          <CustomFromField
+            fieldType={FormFieldType.TEXTAREA}
+            control={form.control}
+            name="currentMedication"
+            label="Current Medication"
+            placeholder="Algam3a Medication"
+          />
+        </div>
         <SubmitButton isLoading={isLoading}>Get Started</SubmitButton>
       </form>
     </Form>
