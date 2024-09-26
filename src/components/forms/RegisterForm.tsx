@@ -10,7 +10,11 @@ import { useState } from "react";
 import { UserFormValidation } from "@/lib/validation";
 import { useRouter } from "next/navigation";
 import { createUser } from "@/lib/actions/patient.actions";
-import { Doctors, GenderGroupOptions } from "../../../constant";
+import {
+  Doctors,
+  GenderGroupOptions,
+  IdentificationTypes,
+} from "../../../constant";
 import { Label } from "@radix-ui/react-label";
 import { RadioGroup, RadioGroupItem } from "../ui/radio-group";
 import Image from "next/image";
@@ -248,6 +252,31 @@ export function RegisterForm({ user }: { user: User }) {
             placeholder="Write the Past Medical History "
           />
         </div>
+        <section className=" space-y-6 ">
+          <div className="mb-9 space-y-1">
+            <h1 className="sub-header"> Identifaction and Verfication </h1>
+          </div>
+        </section>
+        <CustomFromField
+          fieldType={FormFieldType.SELECT}
+          control={form.control}
+          name="identifactionType"
+          label="Identifaction Type"
+          placeholder="ex. Ahmed Khalid"
+        >
+          {IdentificationTypes.map((item) => (
+            <SelectItem value={item} key={item}>
+              {item}
+            </SelectItem>
+          ))}
+        </CustomFromField>
+        <CustomFromField
+          fieldType={FormFieldType.INPUT}
+          control={form.control}
+          name="identifactionNumber"
+          label="Identifaction Number"
+          placeholder="ex. 12345678"
+        />
         <SubmitButton isLoading={isLoading}>Get Started</SubmitButton>
       </form>
     </Form>
