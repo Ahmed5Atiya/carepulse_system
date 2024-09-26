@@ -34,7 +34,7 @@ async function Register({ params: { userId } }: SearchParamProps) {
         alt="Image Home"
         width={1000}
         height={1000}
-        className="max-w-[50%] h-[100%] side-img"
+        className="max-w-[40%] h-[100%] side-img"
       />
     </div>
   );

@@ -200,6 +200,22 @@ export function RegisterForm({ user }: { user: User }) {
             </SelectItem>
           ))}
         </CustomFromField>
+        <div className="flex xl:flex-row flex-col gap-6">
+          <CustomFromField
+            fieldType={FormFieldType.INPUT}
+            control={form.control}
+            name="insuranceProvider"
+            label="Insurance Provider"
+            placeholder="Gizay Menof El Menofiya"
+          />
+          <CustomFromField
+            fieldType={FormFieldType.INPUT}
+            control={form.control}
+            name="insurancePolicyNumber"
+            label="Insurance Policy Number"
+            placeholder="ABC12133733"
+          />
+        </div>
         <SubmitButton isLoading={isLoading}>Get Started</SubmitButton>
       </form>
     </Form>
