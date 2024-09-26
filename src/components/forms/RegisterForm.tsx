@@ -232,6 +232,22 @@ export function RegisterForm({ user }: { user: User }) {
             placeholder="Algam3a Medication"
           />
         </div>
+        <div className="flex xl:flex-row flex-col gap-6">
+          <CustomFromField
+            fieldType={FormFieldType.TEXTAREA}
+            control={form.control}
+            name="familyMedicalHistory"
+            label="Family Medical History"
+            placeholder="Write The Family Medical"
+          />
+          <CustomFromField
+            fieldType={FormFieldType.TEXTAREA}
+            control={form.control}
+            name="pastMedicalHistory"
+            label="Past Medical History"
+            placeholder="Write the Past Medical History "
+          />
+        </div>
         <SubmitButton isLoading={isLoading}>Get Started</SubmitButton>
       </form>
     </Form>
