@@ -10,9 +10,11 @@ import { useState } from "react";
 import { UserFormValidation } from "@/lib/validation";
 import { useRouter } from "next/navigation";
 import { createUser } from "@/lib/actions/patient.actions";
-import { GenderGroupOptions } from "../../../constant";
+import { Doctors, GenderGroupOptions } from "../../../constant";
 import { Label } from "@radix-ui/react-label";
 import { RadioGroup, RadioGroupItem } from "../ui/radio-group";
+import Image from "next/image";
+import { SelectItem } from "../ui/select";
 
 // import { FormFieldType } from "./PatintForm";
 export enum FormFieldType {
@@ -138,7 +140,66 @@ export function RegisterForm({ user }: { user: User }) {
             )}
           />
         </div>
-
+        <div className="flex xl:flex-row flex-col gap-6">
+          <CustomFromField
+            fieldType={FormFieldType.INPUT}
+            control={form.control}
+            name="address"
+            label="Your Address"
+            placeholder="Gizay Menof El Menofiya"
+          />
+          <CustomFromField
+            fieldType={FormFieldType.INPUT}
+            control={form.control}
+            name="occupation"
+            label="Occuption"
+            placeholder="Software Engineer"
+            iconSrc="/assets/icons/user.svg"
+            iconAlt="select"
+          />
+        </div>
+        <div className="flex xl:flex-row flex-col gap-6">
+          <CustomFromField
+            fieldType={FormFieldType.INPUT}
+            control={form.control}
+            name="emarganceContactName"
+            label="Emargance Contact Name"
+            placeholder="Gizay Menof El Menofiya"
+          />
+          <CustomFromField
+            fieldType={FormFieldType.PHONE_INPUT}
+            control={form.control}
+            name="emarganceContactPhone"
+            label="Emargance Contact Phone"
+            placeholder="+12133734253"
+          />
+        </div>
+        <section className=" space-y-6 ">
+          <div className="mb-9 space-y-1">
+            <h1 className="sub-header"> Medical Information </h1>
+          </div>
+        </section>
+        <CustomFromField
+          fieldType={FormFieldType.SELECT}
+          control={form.control}
+          name="primaryPhysician"
+          label="Primary Physician"
+          placeholder="Select a Physician"
+        >
+          {Doctors.map((item) => (
+            <SelectItem value={item.name} key={item.name}>
+              <div className="flex gap-2 items-center cursor-pointer">
+                <Image
+                  src={item.image}
+                  alt={item.name}
+                  width={24}
+                  height={24}
+                />
+                <p>{item.name}</p>
+              </div>
+            </SelectItem>
+          ))}
+        </CustomFromField>
         <SubmitButton isLoading={isLoading}>Get Started</SubmitButton>
       </form>
     </Form>
