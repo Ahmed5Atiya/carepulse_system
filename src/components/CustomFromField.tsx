@@ -18,6 +18,7 @@ import "react-datepicker/dist/react-datepicker.css";
 import DatePicker from "react-datepicker";
 import { Select, SelectContent, SelectTrigger, SelectValue } from "./ui/select";
 import { Textarea } from "./ui/textarea";
+import { Checkbox } from "./ui/checkbox";
 
 interface CustomProps {
   control: Control<any>;
@@ -130,6 +131,22 @@ const RenderField = ({ field, props }: { field: any; props: CustomProps }) => {
               {props.children}
             </SelectContent>
           </Select>
+        </FormControl>
+      );
+    case FormFieldType.CHECKBOX:
+      return (
+        <FormControl>
+          <div className="flex items-center space-x-2">
+            <Checkbox
+              id={props.name}
+              checked={field.value}
+              onCheckedChange={field.onChange}
+              className="text-xl  text-white border-2 border-blue-400 flex items-center justify-center"
+            />
+            <label htmlFor={field.value} className="text-xl  font-mono">
+              {props.label}
+            </label>
+          </div>
         </FormControl>
       );
     default:

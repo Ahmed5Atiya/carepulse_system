@@ -278,7 +278,6 @@ export function RegisterForm({ user }: { user: User }) {
           label="Identifaction Number"
           placeholder="ex. 12345678"
         />
-
         <CustomFromField
           fieldType={FormFieldType.SKELETON}
           control={form.control}
@@ -289,6 +288,29 @@ export function RegisterForm({ user }: { user: User }) {
               <FileUpLoader files={field.value} onChange={field.onChange} />
             </FormControl>
           )}
+        />
+        <section className=" space-y-6 ">
+          <div className="mb-9 space-y-1">
+            <h1 className="sub-header"> Consent and Privacy</h1>
+          </div>
+        </section>
+        <CustomFromField
+          fieldType={FormFieldType.CHECKBOX}
+          control={form.control}
+          name="treatmentConsent"
+          label="I consent to Treatment"
+        />
+        <CustomFromField
+          fieldType={FormFieldType.CHECKBOX}
+          control={form.control}
+          name="disclosureconsent"
+          label="I consent to Disclosure Iformation"
+        />
+        <CustomFromField
+          fieldType={FormFieldType.CHECKBOX}
+          control={form.control}
+          name="privacyConsent"
+          label="I consent to Privacy Policy"
         />
         <SubmitButton isLoading={isLoading}>Get Started</SubmitButton>
       </form>

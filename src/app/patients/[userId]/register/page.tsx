@@ -19,14 +19,9 @@ async function Register({ params: { userId } }: SearchParamProps) {
             className="mb-12 h-10 w-fit"
           />
           <RegisterForm user={user} />
-          <div className="text-14-regular mt-10 flex justify-between">
-            <p className="text-dark-600 justify-items-end xl:text-left">
-              @ 2024 CarePlus
-            </p>
-            <Link href="/?admin=true" className="text-green-400">
-              Admin
-            </Link>
-          </div>
+          <p className="text-dark-600 mt-8 justify-items-end xl:text-left">
+            @ 2024 CarePlus
+          </p>
         </div>
       </section>
       <Image
@@ -34,7 +29,7 @@ async function Register({ params: { userId } }: SearchParamProps) {
         alt="Image Home"
         width={1000}
         height={1000}
-        className="max-w-[40%] h-[100%] side-img"
+        className="max-w-[590px] object-cover side-img"
       />
     </div>
   );
