@@ -19,7 +19,7 @@ import { Label } from "@radix-ui/react-label";
 import { RadioGroup, RadioGroupItem } from "../ui/radio-group";
 import Image from "next/image";
 import { SelectItem } from "../ui/select";
-
+import FileUpLoader from "../FileUpLoader";
 // import { FormFieldType } from "./PatintForm";
 export enum FormFieldType {
   INPUT = "input",
@@ -277,6 +277,18 @@ export function RegisterForm({ user }: { user: User }) {
           name="identifactionNumber"
           label="Identifaction Number"
           placeholder="ex. 12345678"
+        />
+
+        <CustomFromField
+          fieldType={FormFieldType.SKELETON}
+          control={form.control}
+          name="identificationDocument"
+          label="Scanned copy of Identification Document"
+          renderSkeleton={(field) => (
+            <FormControl>
+              <FileUpLoader files={field.value} onChange={field.onChange} />
+            </FormControl>
+          )}
         />
         <SubmitButton isLoading={isLoading}>Get Started</SubmitButton>
       </form>
