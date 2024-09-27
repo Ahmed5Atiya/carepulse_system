@@ -124,16 +124,17 @@ export function RegisterForm({ user }: { user: User }) {
             renderSkeleton={(field) => (
               <FormControl>
                 <RadioGroup
-                  className="flex h-11 gap-6 xl:justify-between"
+                  className="flex h-11 text-white  gap-6 xl:justify-between"
                   onValueChange={field.onChange}
                   defaultValue={field.value}
                 >
                   {GenderGroupOptions.map((option, i) => (
-                    <div
-                      key={option + i}
-                      className="radio-group text-white z-30"
-                    >
-                      <RadioGroupItem value={option} id={option} />
+                    <div key={option + i} className="radio-group  z-30">
+                      <RadioGroupItem
+                        value={option}
+                        id={option}
+                        className=" bg-blue-100 "
+                      />
                       <Label htmlFor={option} className="cursor-pointer">
                         {option}
                       </Label>
