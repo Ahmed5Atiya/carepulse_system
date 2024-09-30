@@ -108,8 +108,6 @@ export const registerPatient = async ({
         ...patient,
       }
     );
-
-    console.log("New patient created:", newPatient);
     return parseStringify(newPatient);
   } catch (error) {
     console.error("An error occurred while creating a new patient:", error);

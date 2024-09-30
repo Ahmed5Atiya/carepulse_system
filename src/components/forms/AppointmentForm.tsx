@@ -3,6 +3,7 @@ import React, { useState } from "react";
 import { Form } from "../ui/form";
 import {
   CreateAppointmentSchema,
+  getAppointmentSchema,
   PatientFormValidation,
 } from "@/lib/validation";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -16,6 +17,7 @@ import { SelectItem } from "../ui/select";
 import { FormFieldType } from "./PatintForm";
 import SubmitButton from "../SubmitButton";
 import { tree } from "next/dist/build/templates/app-page";
+import { createAppointment } from "@/lib/actions/appointment.actions";
 
 function AppointmentForm({
   userId,
@@ -29,8 +31,9 @@ function AppointmentForm({
   const router = useRouter();
   const [isLoading, setIsLoading] = useState(false);
   // 1. Define your form.
-  const form = useForm<z.infer<typeof CreateAppointmentSchema>>({
-    resolver: zodResolver(CreateAppointmentSchema),
+  const AppointmentFormValidation = getAppointmentSchema(type);
+  const form = useForm<z.infer<typeof AppointmentFormValidation>>({
+    resolver: zodResolver(AppointmentFormValidation),
     defaultValues: {
       primaryPhysician: "",
       schedule: new Date(),
@@ -40,8 +43,9 @@ function AppointmentForm({
     },
   });
 
-  async function onSubmit(values: z.infer<typeof CreateAppointmentSchema>) {
+  async function onSubmit(values: z.infer<typeof AppointmentFormValidation>) {
     setIsLoading(true);
+    console.log(values);
     let status;
     switch (type) {
       case "schedule":
@@ -62,12 +66,20 @@ function AppointmentForm({
           patient: patientId,
           primaryPhysician: values.primaryPhysician,
           schedule: new Date(values.schedule),
-          reason: values.reason,
+          reason: values.reason!,
           note: values.note,
           status: status as Status,
         };
+
+        const appointment = await createAppointment(appointemntData);
+        console.log(appointment);
+        if (appointment) {
+          form.reset();
+          router.push(
+            `/patients/${userId}/new-appointment/success?appointmentId=${appointment.$id}`
+          );
+        }
       }
-      //   const appointment = await createAppoointment(appointemntData);
     } catch (error) {}
   }
 
