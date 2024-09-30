@@ -7,20 +7,21 @@ import { Form, FormControl } from "@/components/ui/form";
 import CustomFromField from "../CustomFromField";
 import SubmitButton from "../SubmitButton";
 import { useState } from "react";
-import { UserFormValidation } from "@/lib/validation";
+import { PatientFormValidation } from "@/lib/validation";
 import { useRouter } from "next/navigation";
-import { createUser } from "@/lib/actions/patient.actions";
-import {
-  Doctors,
-  GenderGroupOptions,
-  IdentificationTypes,
-} from "../../../constant";
+import { registerPatient } from "@/lib/actions/patient.actions";
+
 import { Label } from "@radix-ui/react-label";
 import { RadioGroup, RadioGroupItem } from "../ui/radio-group";
 import Image from "next/image";
 import { SelectItem } from "../ui/select";
 import FileUpLoader from "../FileUpLoader";
-// import { FormFieldType } from "./PatintForm";
+import {
+  Doctors,
+  GenderGroupOptions,
+  IdentificationTypes,
+  PatientFormDefaultValues,
+} from "../../../constant";
 export enum FormFieldType {
   INPUT = "input",
   TEXTAREA = "textarea",
@@ -30,47 +31,65 @@ export enum FormFieldType {
   SELECT = "select",
   SKELETON = "skeleton",
 }
-export function RegisterForm({ user }: { user: User }) {
-  const [isLoading, setIsLoading] = useState(false);
+const RegisterForm = ({ user }: { user: User }) => {
   const router = useRouter();
+  const [isLoading, setIsLoading] = useState(false);
   // 1. Define your form.
-  const form = useForm<z.infer<typeof UserFormValidation>>({
-    resolver: zodResolver(UserFormValidation),
+
+  const form = useForm<z.infer<typeof PatientFormValidation>>({
+    resolver: zodResolver(PatientFormValidation),
     defaultValues: {
+      ...PatientFormDefaultValues,
       name: "",
       email: "",
       phone: "",
     },
   });
 
-  async function onSubmit({
-    email,
-    name,
-    phone,
-  }: z.infer<typeof UserFormValidation>) {
+  async function onSubmit(values: z.infer<typeof PatientFormValidation>) {
     setIsLoading(true);
-    try {
-      const userData = {
-        name,
-        email,
-        phone,
-      };
-      // console.log(userData);
-      const newUser = await createUser(userData);
-      if (newUser) {
-        router.push(`/patients/${newUser.$id}/register`);
-      }
-    } catch (error) {
-      console.log(error);
+    console.log("Form values submitted:", values);
+    let formData;
+    if (
+      values.identificationDocument &&
+      values.identificationDocument.length > 0
+    ) {
+      const blobFile = new Blob([values.identificationDocument[0]], {
+        type: values.identificationDocument[0].type,
+      });
+      formData = new FormData();
+      formData.append("blobFile", blobFile);
+      formData.append("fileName", values.identificationDocument[0].name);
     }
 
-    setIsLoading(false);
+    try {
+      const patientData = {
+        ...values,
+        userId: user.$id,
+        birthDate: new Date(values.birthDate),
+        identificationDocument: formData,
+      };
+      console.log("Submitting patient data:", patientData);
+      //@ts-ignore
+      const patient = await registerPatient(patientData);
+      console.log("Patient registered:", patient);
+      console.log("hellow patient ");
+      if (patient) {
+        router.push(`/patients/${user.$id}/new-appointment`);
+      }
+      console.log("hellwo");
+    } catch (error) {
+      // console.log("Error registering patient:", error);
+    }
   }
 
   return (
     <Form {...form}>
       <form
-        onSubmit={form.handleSubmit(onSubmit)}
+        onSubmit={(e) => {
+          form.handleSubmit(onSubmit)(e);
+          console.log("Form submitted");
+        }}
         className="space-y-12 flex-1"
       >
         <section className=" space-y-12 flex-1">
@@ -113,7 +132,7 @@ export function RegisterForm({ user }: { user: User }) {
           <CustomFromField
             fieldType={FormFieldType.DARE_PICKER}
             control={form.control}
-            name="birthData"
+            name="birthDate"
             label="Date of Birth"
           />
           <CustomFromField
@@ -167,14 +186,14 @@ export function RegisterForm({ user }: { user: User }) {
           <CustomFromField
             fieldType={FormFieldType.INPUT}
             control={form.control}
-            name="emarganceContactName"
+            name="emergencyContactName"
             label="Emargance Contact Name"
             placeholder="Gizay Menof El Menofiya"
           />
           <CustomFromField
             fieldType={FormFieldType.PHONE_INPUT}
             control={form.control}
-            name="emarganceContactPhone"
+            name="emergencyContactNumber"
             label="Emargance Contact Phone"
             placeholder="+12133734253"
           />
@@ -261,7 +280,7 @@ export function RegisterForm({ user }: { user: User }) {
         <CustomFromField
           fieldType={FormFieldType.SELECT}
           control={form.control}
-          name="identifactionType"
+          name="identificationType"
           label="Identifaction Type"
           placeholder="ex. Ahmed Khalid"
         >
@@ -274,7 +293,7 @@ export function RegisterForm({ user }: { user: User }) {
         <CustomFromField
           fieldType={FormFieldType.INPUT}
           control={form.control}
-          name="identifactionNumber"
+          name="identificationNumber"
           label="Identifaction Number"
           placeholder="ex. 12345678"
         />
@@ -303,7 +322,7 @@ export function RegisterForm({ user }: { user: User }) {
         <CustomFromField
           fieldType={FormFieldType.CHECKBOX}
           control={form.control}
-          name="disclosureconsent"
+          name="disclosureConsent"
           label="I consent to Disclosure Iformation"
         />
         <CustomFromField
@@ -313,9 +332,10 @@ export function RegisterForm({ user }: { user: User }) {
           label="I consent to Privacy Policy"
         />
         <SubmitButton isLoading={isLoading}>Get Started</SubmitButton>
+        {/* <button type="submit">{isLoading ? "hwllowe" : "hi"} Submit</button> */}
       </form>
     </Form>
   );
-}
+};
 
 export default RegisterForm;
