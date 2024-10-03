@@ -1,11 +1,15 @@
 import PatintForm from "@/components/forms/PatintForm";
 import { Button } from "@/components/ui/button";
 import Image from "next/image";
+import PassKeyModel from "@/components/PassKeyModel";
 import Link from "next/link";
-
-export default function Home() {
+export default function Home({ searchParams }: SearchParamProps) {
+  console.log(searchParams);
+  const isAdmin = searchParams.admin === "true";
   return (
     <div className="flex max-h-screen  h-screen">
+      {/* // OTP  */}
+      {isAdmin && <PassKeyModel />}
       <section className="container remove-scrollbar my-auto">
         <div className="sub-container max-w[450px]">
           <Image
