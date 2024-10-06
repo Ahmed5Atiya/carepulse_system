@@ -17,16 +17,24 @@ import { SelectItem } from "../ui/select";
 import { FormFieldType } from "./PatintForm";
 import SubmitButton from "../SubmitButton";
 import { tree } from "next/dist/build/templates/app-page";
-import { createAppointment } from "@/lib/actions/appointment.actions";
+import {
+  createAppointment,
+  updateAppointment,
+} from "@/lib/actions/appointment.actions";
+import { Appointment } from "../../../types/appwrite.types";
 
 function AppointmentForm({
   userId,
   patientId,
   type,
+  appointment,
+  setOpen,
 }: {
   userId: string;
   patientId: string;
   type: "create" | "cancel" | "schedule";
+  appointment: Appointment;
+  setOpen: (open: boolean) => void;
 }) {
   const router = useRouter();
   const [isLoading, setIsLoading] = useState(false);
@@ -35,17 +43,18 @@ function AppointmentForm({
   const form = useForm<z.infer<typeof AppointmentFormValidation>>({
     resolver: zodResolver(AppointmentFormValidation),
     defaultValues: {
-      primaryPhysician: "",
-      schedule: new Date(),
-      reason: "",
-      note: "",
-      cancellationReason: "",
+      primaryPhysician: appointment ? appointment.primaryPhysician : "",
+      schedule: appointment
+        ? new Date(appointment.schedule)
+        : new Date(Date.now()),
+      reason: appointment ? appointment?.reason : "",
+      note: appointment?.note || "",
+      cancellationReason: appointment?.cancellationReason || "",
     },
   });
 
   async function onSubmit(values: z.infer<typeof AppointmentFormValidation>) {
     setIsLoading(true);
-    console.log(values);
     let status;
     switch (type) {
       case "schedule":
@@ -70,7 +79,6 @@ function AppointmentForm({
           note: values.note,
           status: status as Status,
         };
-
         const appointment = await createAppointment(appointemntData);
         console.log(appointment);
         if (appointment) {
@@ -79,8 +87,27 @@ function AppointmentForm({
             `/patients/${userId}/new-appointment/success?appointmentId=${appointment.$id}`
           );
         }
+      } else {
+        const appointmentToUpdate = {
+          type,
+          userId,
+          appointmentId: appointment?.$id!,
+          appointment: {
+            primaryPhysician: values?.primaryPhysician,
+            schedule: new Date(values?.schedule),
+            status: status as Status,
+            cancellationReason: values?.cancellationReason,
+          },
+        };
+        const updatedAppointment = await updateAppointment(appointmentToUpdate);
+        if (updatedAppointment) {
+          setOpen && setOpen(false);
+          form.reset();
+        }
       }
-    } catch (error) {}
+    } catch (error) {
+      console.log(error);
+    }
   }
 
   return (
@@ -92,10 +119,12 @@ function AppointmentForm({
         }}
         className="space-y-12 flex-1"
       >
-        <section className=" space-y-12 flex-1">
-          <h1 className="header"> New Appointment 👋</h1>
-          <p className="text-dark-700">Tell More About Yourself .</p>
-        </section>
+        {type === "create" && (
+          <section className=" space-y-12 flex-1">
+            <h1 className="header"> New Appointment 👋</h1>
+            <p className="text-dark-700">Tell More About Yourself .</p>
+          </section>
+        )}
         {type !== "cancel" && (
           <>
             <CustomFromField
@@ -150,7 +179,7 @@ function AppointmentForm({
           <CustomFromField
             fieldType={FormFieldType.TEXTAREA}
             control={form.control}
-            name="cansellationReason"
+            name="cancellationReason"
             label="Resoins For Cansellation"
             placeholder=" Write The Resoins For Cancel"
           />
