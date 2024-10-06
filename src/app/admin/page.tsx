@@ -67,11 +67,6 @@ import { columns } from "@/components/table/columns";
 const AdminPage = dynamic(
   async () => {
     const appointments = await getRecentAppointmentList();
-
-    if (!appointments) {
-      return () => <div>Error loading appointments</div>;
-    }
-
     return function AdminPageComponent() {
       return (
         <div className="flex flex-col text-white font-mono space-y-14 max-w-7xl mx-auto">
