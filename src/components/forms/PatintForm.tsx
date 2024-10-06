@@ -40,6 +40,7 @@ export function PatintForm() {
     name,
     phone,
   }: z.infer<typeof UserFormValidation>) {
+    console.log("hellow form supmiit");
     setIsLoading(true);
     try {
       const userData = {
@@ -47,10 +48,13 @@ export function PatintForm() {
         email,
         phone,
       };
-      // console.log(userData);
       const newUser = await createUser(userData);
+      console.log("this is phone after user ");
+
       if (newUser) {
+        console.log("this is phone ");
         router.push(`/patients/${newUser.$id}/register`);
+        console.log("this is phone three ");
       }
     } catch (error) {
       console.log(error);

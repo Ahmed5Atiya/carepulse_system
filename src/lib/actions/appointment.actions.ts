@@ -5,11 +5,12 @@ import {
   APPOINTMENT_COLLECTION_ID,
   DATABASE_ID,
   databases,
+  messaging,
   PATIENT_COLLECTION_ID,
 } from "../appwrite.config";
 import { parseStringify } from "../utils";
 import { revalidatePath } from "next/cache";
-
+import { formatDateTime } from "@/lib/utils";
 export const createAppointment = async (
   appointment: CreateAppointmentParams
 ) => {
@@ -101,8 +102,33 @@ export const updateAppointment = async ({
     }
 
     //SMS notivaction
+    const smsMessage = `hi  , this is hospital
+    ${
+      type === "schedule"
+        ? `Your appointment has been scheduled ${
+            formatDateTime(appointment.schedule!).dateTime
+          } with doctor ${appointment.primaryPhysician}`
+        : `Your appointment has been cancelled for the following reason  ${appointment.cancellationReason}`
+    }
+    `;
+    await sendSMSNotification(userId, smsMessage);
     revalidatePath("/admin");
     return parseStringify(updatedAppointment);
+  } catch (error) {
+    console.log(error);
+  }
+};
+
+export const sendSMSNotification = async (userId: string, content: string) => {
+  try {
+    const message = await messaging.createSms(
+      ID.unique(),
+      content,
+      [],
+      [userId]
+    );
+
+    return parseStringify(message);
   } catch (error) {
     console.log(error);
   }

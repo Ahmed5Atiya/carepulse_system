@@ -8,7 +8,6 @@ export default function Home({ searchParams }: SearchParamProps) {
   const isAdmin = searchParams.admin === "true";
   return (
     <div className="flex max-h-screen  h-screen">
-      {/* // OTP  */}
       {isAdmin && <PassKeyModel />}
       <section className="container remove-scrollbar my-auto">
         <div className="sub-container max-w[450px]">
