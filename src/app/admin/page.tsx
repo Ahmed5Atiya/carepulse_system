@@ -93,7 +93,7 @@ const AdminPage = dynamic(
               <StatCard
                 type="appointments"
                 count={appointments.scheduledCount}
-                label="Scheduled appointments"
+                label="Scheduledd appointments"
                 icons="/assets/icons/appointments.svg"
               />
               <StatCard
